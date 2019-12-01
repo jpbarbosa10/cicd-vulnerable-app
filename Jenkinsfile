@@ -4,6 +4,17 @@ pipeline {
         DOCKER_IMAGE_NAME = "juanpab/vulnerable-app"
     }
     stages {
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                  // debe estar configurado en Global Tool Configuration
+                  scannerHome = tool 'sonarscanner'
+                }
+                withSonarQubeEnv('sonarqube') {
+                  sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=application-test"
+                }
+            }
+        }
         stage('Build Docker Image') {
             when {
                 branch 'master'
