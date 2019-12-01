@@ -1,0 +1,49 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: vulnerable-app-service-canary
+spec:
+  type: NodePort
+  selector:
+    app: vulnerable-app
+    track: canary
+  ports:
+  - protocol: TCP
+    port: 8080
+    nodePort: 30031
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vulnerable-app-deployment-canary
+  labels:
+    app: vulnerable-app
+spec:
+  replicas: $CANARY_REPLICAS
+  selector:
+    matchLabels:
+      app: vulnerable-app
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: vulnerable-app
+        track: canary
+    spec:
+      containers:
+      - name: vulnerable-app
+        image: $DOCKER_IMAGE_NAME:$BUILD_NUMBER
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 200m

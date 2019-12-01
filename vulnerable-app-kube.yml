@@ -1,0 +1,70 @@
+# Creación del servicio para exponer la aplicación en el worker node
+kind: Service
+apiVersion: v1
+metadata:
+  # NOmbre del servicio
+  name: vulnerable-app-service
+spec:
+  #Tipo de servicio Puerto en el Nodo
+  type: NodePort
+  selector:
+    #Nombre de la aplicación
+    app: vulnerable-app
+    #Etiqueta para seguimiento del servicio
+    track: stable
+  #Publicado en el nodo worker por puerto 30030 e interno en el cluster puerto 8080
+  ports:
+  - protocol: TCP
+    port: 8080
+    nodePort: 30030
+
+---
+
+#creación del despliegue del pod en el worker node
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vulnerable-app-deployment
+  #nombre de la aplicación que se va a desplegar
+  labels:
+    app: vulnerable-app
+spec:
+  # Numero de replicas (pods) que se crearán en el despliegue.
+  replicas: 2
+  selector:
+    matchLabels:
+      #Nombre de la aplicación
+      app: vulnerable-app
+      #Etiqueta para seguimiento del servicio
+      track: stable
+  # creación de la plantilla de despliegue
+  template:
+    metadata:
+      labels:
+        #Nombre de la aplicación
+        app: vulnerable-app
+        #Etiqueta para seguimiento del servicio
+        track: stable
+    spec:
+      #nombre y ubicación del contenedor
+      containers:
+      - name: vulnerable-app
+        #Nombre de la imagen construida en Dockerhub
+        image: $DOCKER_IMAGE_NAME:$BUILD_NUMBER
+        #Puerto de despliegue en el contenedor
+        ports:
+        - containerPort: 8080
+        #Prueba de vida de la aplicación desplegada en el POD
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          #Tiempo de despliegue inicial
+          initialDelaySeconds: 15
+          #Tiempo de espera para dar por caída la aplicación
+          timeoutSeconds: 1
+          #Periodo de la prueba de vida
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 200m
