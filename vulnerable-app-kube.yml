@@ -15,7 +15,7 @@ spec:
   #Publicado en el nodo worker por puerto 30030 e interno en el cluster puerto 8080
   ports:
   - protocol: TCP
-    port: 8080
+    port: 80
     nodePort: 30030
 
 ---
@@ -53,16 +53,16 @@ spec:
         image: $DOCKER_IMAGE_NAME:$BUILD_NUMBER
         #Puerto de despliegue en el contenedor
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         #Prueba de vida de la aplicación desplegada en el POD
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 80
           #Tiempo de despliegue inicial
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           #Tiempo de espera para dar por caída la aplicación
-          timeoutSeconds: 1
+          timeoutSeconds: 2
           #Periodo de la prueba de vida
           periodSeconds: 10
         resources:

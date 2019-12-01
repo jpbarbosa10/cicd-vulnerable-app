@@ -11,7 +11,7 @@ pipeline {
                   scannerHome = tool 'sonarscanner'
                 }
                 withSonarQubeEnv('sonarqube') {
-                  sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=application-test"
+                  sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vulnerable-app"
                 }
             }
         }

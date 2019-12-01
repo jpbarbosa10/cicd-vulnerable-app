@@ -9,7 +9,7 @@ spec:
     track: canary
   ports:
   - protocol: TCP
-    port: 8080
+    port: 80
     nodePort: 30031
 
 ---
@@ -36,13 +36,13 @@ spec:
       - name: vulnerable-app
         image: $DOCKER_IMAGE_NAME:$BUILD_NUMBER
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
-          initialDelaySeconds: 15
-          timeoutSeconds: 1
+            port: 80
+          initialDelaySeconds: 30
+          timeoutSeconds: 2
           periodSeconds: 10
         resources:
           requests:
