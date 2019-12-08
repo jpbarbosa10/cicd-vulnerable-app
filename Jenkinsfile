@@ -36,6 +36,16 @@ pipeline {
                 aquaMicroscanner imageName: DOCKER_IMAGE_NAME, notCompliesCmd: '', onDisallowed: 'ignore', outputFormat: 'html'
             }
         }
+        stage('ScanDockerImage Anchore') {
+            when {
+                branch 'master'
+            }
+            steps {
+                def imageLine: DOCKER_IMAGE_NAME
+                writeFile file: 'anchore_images', text: imageLine
+                anchore bailOnFail: false, name: 'anchore_images'
+            }
+        }
         stage('PushDockerImage') {
             when {
                 branch 'master'
