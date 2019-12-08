@@ -41,7 +41,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh ‘echo “juanpab/vulnerable-app `pwd`/Dockerfile” > anchore_images’
+                sh "echo 'juanpab/vulnerable-app `pwd`/Dockerfile' > anchore_images"
                 anchore bailOnFail: false, name: 'anchore_images'
             }
         }
