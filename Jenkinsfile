@@ -41,8 +41,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                def imageLine: DOCKER_IMAGE_NAME
-                writeFile file: 'anchore_images', text: imageLine
+                sh ‘echo “juanpab/vulnerable-app `pwd`/Dockerfile” > anchore_images’
                 anchore bailOnFail: false, name: 'anchore_images'
             }
         }
