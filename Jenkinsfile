@@ -42,7 +42,7 @@ pipeline {
             }
             steps {
                 sh 'echo "docker.io/juanpab/vulnerable-app `pwd`/Dockerfile" > anchore_images'
-                anchore bailOnFail: false, name: 'anchore_images'
+                anchore bailOnFail: false, forceAnalyze: true, name: 'anchore_images'
             }
         }
         stage('PushDockerImage') {
