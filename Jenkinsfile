@@ -41,7 +41,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh "echo '${DOCKER_IMAGE_NAME} $(pwd)/Dockerfile' > anchore_images"
+                sh "echo ${DOCKER_IMAGE_NAME} $(pwd)'/Dockerfile' > anchore_images"
                 anchore bailOnFail: false, name: 'anchore_images'
             }
         }
